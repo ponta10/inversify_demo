@@ -1,27 +1,40 @@
+"use client"
 import { useEffect, useState } from 'react';
+import axios from 'axios';
+
+interface TodoProps {
+    id: number;
+    title: string;
+    completed: boolean;
+}
 
 const Home: React.FC = () => {
-    const [todos, setTodos] = useState<string[]>([]);
+    const [todos, setTodos] = useState<TodoProps[]>([]);
     const [newTodo, setNewTodo] = useState<string>('');
 
     const fetchTodos = async () => {
-        const response = await fetch('/api/todos');
-        const data = await response.json();
-        setTodos(data);
+        try {
+            const response = await axios.get('/todo');
+            setTodos(response.data);
+        } catch (error) {
+            console.error('Error fetching todos:', error);
+        }
     };
+
+    console.log(todos);
 
     const handleAddTodo = async () => {
         if (newTodo) {
-            const response = await fetch('/api/todos', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ title: newTodo })
-            });
-            const addedTodo = await response.json();
-            setTodos([...todos, addedTodo.title]);
-            setNewTodo('');
+            try {
+                const response = await axios.post('/todo', {
+                    title: newTodo
+                });
+                const addedTodo = response.data;
+                setTodos([...todos, addedTodo]);
+                setNewTodo('');
+            } catch (error) {
+                console.error('Error adding todo:', error);
+            }
         }
     };
 
@@ -43,8 +56,8 @@ const Home: React.FC = () => {
             <button onClick={handleAddTodo}>追加</button>
 
             <ul>
-                {todos.map((todo, idx) => (
-                    <li key={idx}>{todo}</li>
+                {todos?.map((todo, idx) => (
+                    <li key={idx}>{todo?.title}</li>
                 ))}
             </ul>
         </div>
