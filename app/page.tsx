@@ -11,6 +11,8 @@ interface TodoProps {
 const Home: React.FC = () => {
     const [todos, setTodos] = useState<TodoProps[]>([]);
     const [newTodo, setNewTodo] = useState<string>('');
+    const [selectedTodo, setSelectedTodo] = useState<TodoProps | null>(null);
+    const [editTitle, setEditTitle] = useState<string>('');
 
     const fetchTodos = async () => {
         try {
@@ -37,15 +39,40 @@ const Home: React.FC = () => {
     };
 
     const handleShow = async (id: number) => {
-      try {
-        const response = await axios.get(`/todo/${id}`);
-        console.log(response?.data);
-      } catch (err) {
-        throw err;
-      }
+        try {
+            const response = await axios.get(`/todo/${id}`);
+            setSelectedTodo(response.data);
+        } catch (err) {
+            console.error('Error fetching todo:', err);
+        }
     };
 
-    // 初期ロード時にTODOを取得
+    const handleUpdate = async () => {
+        if (selectedTodo && editTitle) {
+            try {
+                const response = await axios.put(`/todo/${selectedTodo.id}`, {
+                    title: editTitle
+                });
+                const updatedTodo = response.data;
+                setTodos(todos.map(todo => todo.id === updatedTodo.id ? updatedTodo : todo));
+                setSelectedTodo(null);
+                setEditTitle('');
+            } catch (error) {
+                console.error('Error updating todo:', error);
+            }
+        }
+    };
+
+    const handleDelete = async (id: number) => {
+        try {
+            await axios.delete(`/todo/${id}`);
+            setTodos(todos.filter(todo => todo.id !== id));
+            setSelectedTodo(null);
+        } catch (error) {
+            console.error('Error deleting todo:', error);
+        }
+    };
+
     useEffect(() => {
         fetchTodos();
     }, []);
@@ -63,10 +90,25 @@ const Home: React.FC = () => {
             <button onClick={handleAddTodo}>追加</button>
 
             <ul>
-                {todos?.map((todo, idx) => (
-                    <li key={idx} onClick={() => handleShow(todo?.id)}>{todo?.title}</li>
+                {todos.map((todo, idx) => (
+                    <li key={idx} onClick={() => handleShow(todo.id)}>
+                        {todo.title}
+                        <button onClick={() => handleDelete(todo.id)}>削除</button>
+                    </li>
                 ))}
             </ul>
+
+            {selectedTodo && (
+                <div>
+                    <h2>タスクの編集</h2>
+                    <input 
+                        value={editTitle} 
+                        onChange={e => setEditTitle(e.target.value)} 
+                        placeholder="タスクのタイトルを編集"
+                    />
+                    <button onClick={handleUpdate}>更新</button>
+                </div>
+            )}
         </div>
     );
 }
