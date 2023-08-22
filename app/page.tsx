@@ -21,8 +21,6 @@ const Home: React.FC = () => {
         }
     };
 
-    console.log(todos);
-
     const handleAddTodo = async () => {
         if (newTodo) {
             try {
@@ -36,6 +34,15 @@ const Home: React.FC = () => {
                 console.error('Error adding todo:', error);
             }
         }
+    };
+
+    const handleShow = async (id: number) => {
+      try {
+        const response = await axios.get(`/todo/${id}`);
+        console.log(response?.data);
+      } catch (err) {
+        throw err;
+      }
     };
 
     // 初期ロード時にTODOを取得
@@ -57,7 +64,7 @@ const Home: React.FC = () => {
 
             <ul>
                 {todos?.map((todo, idx) => (
-                    <li key={idx}>{todo?.title}</li>
+                    <li key={idx} onClick={() => handleShow(todo?.id)}>{todo?.title}</li>
                 ))}
             </ul>
         </div>

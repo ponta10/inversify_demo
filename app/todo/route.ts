@@ -11,9 +11,9 @@ export async function GET() {
     return NextResponse.json(todos)
 }
 
-
 export async function POST(req: Request) {
     const { title } = await req.json();
     const newTodo = await todoService.addTodo(title);
     return NextResponse.json(newTodo);
 }
+

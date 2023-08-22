@@ -1,0 +1,38 @@
+エラーメッセージ「プロパティ 'getTodo' は型 'typeof TodoService' に存在しません」は、`TodoService`のインスタンスではなく、`TodoService`クラス自体に`getTodo`メソッドをアクセスしようとしたときに発生します。
+
+この問題を解決するためには、`TodoService`のインスタンスを正しく取得して、そのインスタンスを通じて`getTodo`メソッドにアクセスする必要があります。
+
+以下は、問題の原因と解決策の一例です：
+
+### 問題の原因
+
+```typescript
+class TodoService {
+    async getTodo(id: number): Promise<Todo | null> {
+        // ...
+    }
+}
+
+// 以下のようにクラス自体にアクセスしている場合
+TodoService.getTodo(1);
+```
+
+### 解決策
+
+1. **インスタンスを作成してアクセス**:
+
+```typescript
+const service = new TodoService();
+service.getTodo(1);
+```
+
+2. **Inversifyを使用してインスタンスを取得**:
+
+もしInversifyなどのDIコンテナを使用している場合、コンテナから正しいインスタンスを取得する必要があります。
+
+```typescript
+const todoService = container.get<TodoService>(TYPES.TodoService);
+todoService.getTodo(1);
+```
+
+上記の解決策のどちらかを適用することで、エラーを解消できるはずです。
