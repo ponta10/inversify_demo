@@ -7,7 +7,11 @@ export class TodoRepository {
     private prisma = new PrismaClient();
 
     async findAll(): Promise<Todo[]> {
-        return this.prisma.todo.findMany();
+        return this.prisma.todo.findMany({
+            orderBy: {
+                id: 'asc' // 'asc' は昇順を意味します。降順にしたい場合は 'desc' を使用します。
+            }
+        });
     }
 
     async find(id: number): Promise<Todo | null> {

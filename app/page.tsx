@@ -17,8 +17,8 @@ const Title = styled.h1`
 
 const Input = styled.input`
   padding: 10px;
-  width: 80%;
   margin-right: 10px;
+  border: 1px solid #ddd;
 `;
 
 const Button = styled.button`
@@ -46,6 +46,7 @@ const TodoItem = styled.li`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  cursor: pointer
 `;
 
 const EditContainer = styled.div`
@@ -91,6 +92,7 @@ const Home: React.FC = () => {
     try {
       const response = await axios.get(`/todo/${id}`);
       setSelectedTodo(response.data);
+      setEditTitle(response.data?.title);
     } catch (err) {
       console.error("Error fetching todo:", err);
     }
@@ -144,8 +146,8 @@ const Home: React.FC = () => {
 
       <TodoList>
         {todos.map((todo, idx) => (
-          <TodoItem key={idx}>
-            <span onClick={() => handleShow(todo.id)}>{todo.title}</span>
+          <TodoItem key={idx} onClick={() => handleShow(todo.id)}>
+            <span>{todo.title}</span>
             <Button onClick={() => handleDelete(todo.id)}>削除</Button>
           </TodoItem>
         ))}
