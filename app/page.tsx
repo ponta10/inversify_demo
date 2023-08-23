@@ -55,7 +55,6 @@ const EditContainer = styled.div`
 interface TodoProps {
   id: number;
   title: string;
-  completed: boolean;
 }
 
 const Home: React.FC = () => {

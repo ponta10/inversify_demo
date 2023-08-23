@@ -20,17 +20,15 @@ export class TodoRepository {
         return this.prisma.todo.create({
             data: {
                 title: title,
-                completed: false
             }
         });
     }
 
-    async update(id: number, title: string, completed?: boolean): Promise<Todo | null> {
+    async update(id: number, title: string): Promise<Todo | null> {
         return this.prisma.todo.update({
             where: { id: id },
             data: {
                 title: title,
-                completed: completed
             }
         });
     }

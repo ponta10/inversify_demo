@@ -20,8 +20,7 @@ export async function PUT(req: Request, { params }: { params: { id: number } }) 
     const { title } = await req.json();
     const updatedTodo = await todoService.updateTodo(
         Number(params.id),
-        title,
-        true
+        title
     );
 
     if (updatedTodo) {

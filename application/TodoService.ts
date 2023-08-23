@@ -7,6 +7,12 @@ import TYPES from '../types';
 export class TodoService {
     @inject(TYPES.TodoRepository) private todoRepository!: TodoRepository;
 
+    // constructor()を使う場合
+    // private todoRepository: TodoRepository;
+    // constructor(@inject(TYPES.TodoRepository) todoRepository: TodoRepository) {
+    //     this.todoRepository = todoRepository;
+    // }
+
     async getAllTodos(): Promise<Todo[]> {
         return this.todoRepository.findAll();
     }
@@ -19,8 +25,8 @@ export class TodoService {
         return this.todoRepository.create(title);
     }
 
-    async updateTodo(id: number, title: string, completed?: boolean): Promise<Todo | null> {
-        return this.todoRepository.update(id, title, completed);
+    async updateTodo(id: number, title: string): Promise<Todo | null> {
+        return this.todoRepository.update(id, title);
     }
 
     async deleteTodo(id: number): Promise<void> {
