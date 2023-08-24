@@ -1,4 +1,3 @@
-import { NextApiRequest, NextApiResponse } from 'next';
 import container from '../../inversify.config';
 import TYPES from '../../types';
 import { TodoService } from '../../application/TodoService';
